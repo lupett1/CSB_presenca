@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSB Júnior - Coleta de Presença</title>
+  <title>CSB Júnior - Coleta de Presença RG</title>
 
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon.png">
@@ -28,36 +28,91 @@
       margin: 0;
       padding-top: 130px;
     }
+
     .topo {
-      position: fixed; top: 0; width: 100%; text-align: center;
-      background: rgba(255,255,255,0.7); backdrop-filter: blur(6px); padding: 15px 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 10;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(6px);
+      padding: 15px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 10;
     }
-    .titulo { color: #0b1b5e; font-size: clamp(20px,4.5vw,28px); font-weight: bold; margin: 0; line-height:1.3;}
-    .subtitulo { color: #20337e; font-size: clamp(16px,3.5vw,20px); margin:4px 0 0 0; }
-    h1 { color: #0b1b5e; font-size: clamp(20px,5vw,26px); margin-bottom:20px; text-align:center; }
+
+    .titulo {
+      color: #0b1b5e;
+      font-size: clamp(20px, 4.5vw, 28px);
+      font-weight: bold;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .subtitulo {
+      color: #20337e;
+      font-size: clamp(16px, 3.5vw, 20px);
+      margin: 4px 0 0 0;
+    }
+
+    h1 {
+      color: #0b1b5e;
+      font-size: clamp(20px, 5vw, 26px);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
     select {
-      padding: 14px; font-size: 16px; border-radius: 10px; border: 1px solid #ccc;
-      width: 90%; max-width: 320px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      text-align: center; margin-bottom:15px;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      width: 90%;
+      max-width: 320px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+      margin-bottom: 15px;
     }
-    .botoes { display:flex; flex-direction:column; gap:10px; width:90%; max-width:320px; }
+
     button {
-      padding: 14px; background-color:#0b1b5e; color:white; border:none; border-radius:10px;
-      font-size:17px; cursor:pointer; box-shadow:0 3px 8px rgba(0,0,0,0.2); transition:0.2s;
+      width: 90%;
+      max-width: 320px;
+      padding: 14px;
+      background-color: #0b1b5e;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 17px;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+      transition: 0.3s;
     }
-    button:hover { background-color:#122e7b; transform:scale(1.02); }
+
+    button:hover {
+      background-color: #122e7b;
+      transform: scale(1.03);
+    }
+
     #mensagem {
-      margin-top:25px; font-weight:bold; color:#0b1b5e; text-align:center;
-      background: rgba(255,255,255,0.85); padding:10px 16px; border-radius:8px;
-      box-shadow:0 1px 3px rgba(0,0,0,0.1); width:90%; max-width:340px;
+      margin-top: 25px;
+      font-weight: bold;
+      color: #0b1b5e;
+      text-align: center;
+      background: rgba(255,255,255,0.8);
+      padding: 10px 16px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 340px;
     }
   </style>
 </head>
 <body>
+
   <div class="topo">
     <h2 class="titulo">CSB Júnior</h2>
-    <p class="subtitulo">Coleta de Presença</p>
+    <p class="subtitulo">Coleta de Presença RG</p>
   </div>
 
   <h1>Selecione seu nome:</h1>
@@ -97,66 +152,41 @@
     <option>Vitória N.</option>
   </select>
 
-  <div class="botoes">
-    <button onclick="registrarPresenca('RG')">RG</button>
-    <button onclick="registrarPresenca('Reunião de Projetos')">Reunião de Projetos</button>
-    <button onclick="registrarPresenca('Reunião de Comercial')">Reunião de Comercial</button>
-    <button onclick="registrarPresenca('Reunião de Gestão')">Reunião de Gestão</button>
-  </div>
-
+  <button onclick="registrarPresenca()">Registrar Presença</button>
   <div id="mensagem"></div>
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbyZ31zb-QRdK5LzkLNGDRQ1qRa0CVgCWu0KRymJs9nmU4qW9yBJb_oGNCSnxBToOWO3ig/exec";
 
-    function showMensagem(text, color="black") {
-      const m = document.getElementById("mensagem");
-      m.textContent = text;
-      m.style.color = color;
-    }
-
-    async function registrarPresenca(evento) {
+    function registrarPresenca() {
       const nome = document.getElementById("nome").value;
+      const mensagem = document.getElementById("mensagem");
+
       if (!nome) {
-        showMensagem("⚠️ Por favor, selecione seu nome.", "red");
+        mensagem.textContent = "⚠️ Por favor, selecione seu nome.";
+        mensagem.style.color = "red";
         return;
       }
 
-      // Mostra feedback visível imediatamente:
-      showMensagem(`⏳ Registrando presença de ${nome} em "${evento}"...`, "#0b1b5e");
+      mensagem.textContent = `⏳ Registrando presença de ${nome}...`;
+      mensagem.style.color = "#0b1b5e";
 
-      // Cria os dois corpos: formEncoded e jsonBody
-      const formBody = new URLSearchParams({ nome: nome, evento: evento }).toString();
-      const jsonBody = JSON.stringify({ nome: nome, evento: evento });
-
-      // 1) Tenta enviar x-www-form-urlencoded (Apps Script costuma aceitar)
-      // 2) Em seguida tenta enviar JSON como fallback (Apps Script também vai tratar)
-      // Faz as duas requisições em sequência (não duplicará se o servidor gravar duas vezes: o log vai ajudar a checar)
-      try {
-        // Primeiro: form-encoded
-        await fetch(scriptURL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-          body: formBody,
-          cache: "no-store"
-        });
-
-        // Segundo: JSON (fallback silencioso)
-        await fetch(scriptURL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-          body: jsonBody,
-          cache: "no-store"
-        });
-
-        // Mostra sucesso (ainda que o Apps Script possa demorar para gravar na planilha,
-        // pelo menos o envio já foi disparado)
-        showMensagem(`✅ Presença de ${nome} registrada em "${evento}"!`, "green");
-        setTimeout(() => showMensagem(""), 4000);
-      } catch (err) {
-        console.error(err);
-        showMensagem("❌ Erro ao registrar presença.", "red");
-      }
+      fetch(scriptURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ nome: nome })
+      })
+      .then(response => response.text())
+      .then(result => {
+        mensagem.textContent = `✅ Presença de ${nome} registrada com sucesso!`;
+        mensagem.style.color = "green";
+        setTimeout(() => mensagem.textContent = "", 4000);
+      })
+      .catch(error => {
+        mensagem.textContent = "❌ Erro ao registrar presença.";
+        mensagem.style.color = "red";
+        console.error(error);
+      });
     }
   </script>
 </body>
