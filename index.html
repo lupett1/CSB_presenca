@@ -156,9 +156,10 @@
   <div id="mensagem"></div>
 
   <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbyZ31zb-QRdK5LzkLNGDRQ1qRa0CVgCWu0KRymJs9nmU4qW9yBJb_oGNCSnxBToOWO3ig/exec";
+  const scriptURL =
+    "https://script.google.com/macros/s/AKfycbyZ31zb-QRdK5LzkLNGDRQ1qRa0CVgCWu0KRymJs9nmU4qW9yBJb_oGNCSnxBToOWO3ig/exec";
 
-  async function registrarPresenca() {
+  function registrarPresenca() {
     const nome = document.getElementById("nome").value;
     const mensagem = document.getElementById("mensagem");
 
@@ -169,27 +170,38 @@
     }
 
     // 🟢 Mostra confirmação imediata
-    mensagem.textContent = `✅ Presença de ${nome} registrada! (enviando...)`;
+    mensagem.textContent = `✅ Presença de ${nome} registrada!`;
     mensagem.style.color = "green";
 
-    // 🕐 Envia em segundo plano, sem esperar resposta
+    // ⏳ Envia os dados em segundo plano (sem travar a página)
+    const dados = new URLSearchParams({ nome });
+
     try {
-      navigator.sendBeacon
-        ? navigator.sendBeacon(scriptURL, new URLSearchParams({ nome }))
-        : fetch(scriptURL, {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams({ nome })
-          });
-    } catch (err) {
-      console.error("Erro no envio:", err);
+      if (navigator.sendBeacon) {
+        // envia de forma assíncrona e leve
+        const blob = new Blob([dados], {
+          type: "application/x-www-form-urlencoded;charset=UTF-8",
+        });
+        navigator.sendBeacon(scriptURL, blob);
+      } else {
+        // fallback para navegadores sem sendBeacon
+        fetch(scriptURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: dados,
+        });
+      }
+    } catch (erro) {
+      console.error("Erro ao enviar presença:", erro);
     }
 
-    // Limpa a mensagem após alguns segundos
+    // limpa mensagem após alguns segundos
     setTimeout(() => (mensagem.textContent = ""), 4000);
   }
 </script>
 
+
 </body>
 </html>
+
 
