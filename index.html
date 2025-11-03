@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSB Júnior - Coleta de Presença RG</title>
+  <title>CSB Júnior - Coleta de Presença</title>
 
-  <!-- Favicon embutido -->
-  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAARVBMVEX///8AAABJSUmcnJx5eXk4ODh3d3dvb2+7u7vGxsa0tLRYWFifn5/T09PMzMwkJCSgoKDk5OR/f3/MzMzt7e2Li4uYmJg6OjrObHQ2AAABbElEQVR4nO2USQ6DMAxFLeOIMMP//4ZCVE0Qv1Qtrm+Qf4RQvh0ElhbQmSrAXrJgEVBTSutjXzhBOKSBQDCpLRsFq6nVWoWPEljxFON4QEd1bL83YgIBgZPXYkaR5LllUQ0KiIYzGYgDTPFQW+TtUqYHjBAZukEtjUbZQ6z7x1DRGJ+dwfUeDTbi2y2YVY3GXKSmiyfghDwtTkX+KY4HoE+Lf0J4MXUVDV5dYZCFwB/CuVckDpbZeN/g9TD3MM3WxRDOe21n2hyIX/lK3v5DLi2Ef1vJe4Xlt2s6hfW/DvD3BOe7F58kLgmPsM/HX5yYAAAAAAAAAAAAAAAAA4Df4ALkxPPcDTNYAAAAASUVORK5CYII=">
-
-  <!-- Manifesto e Service Worker -->
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon.png">
+
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -77,9 +75,15 @@
       margin-bottom: 15px;
     }
 
-    button {
+    .botoes {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
       width: 90%;
       max-width: 320px;
+    }
+
+    button {
       padding: 14px;
       background-color: #0b1b5e;
       color: white;
@@ -114,7 +118,7 @@
 
   <div class="topo">
     <h2 class="titulo">CSB Júnior</h2>
-    <p class="subtitulo">Coleta de Presença RG</p>
+    <p class="subtitulo">Coleta de Presença</p>
   </div>
 
   <h1>Selecione seu nome:</h1>
@@ -154,13 +158,19 @@
     <option>Vitória N.</option>
   </select>
 
-  <button onclick="registrarPresenca()">Registrar Presença</button>
+  <div class="botoes">
+    <button onclick="registrarPresenca('RG')">RG</button>
+    <button onclick="registrarPresenca('Reunião de Projetos')">Reunião de Projetos</button>
+    <button onclick="registrarPresenca('Reunião de Comercial')">Reunião de Comercial</button>
+    <button onclick="registrarPresenca('Reunião de Gestão')">Reunião de Gestão</button>
+  </div>
+
   <div id="mensagem"></div>
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbyZ31zb-QRdK5LzkLNGDRQ1qRa0CVgCWu0KRymJs9nmU4qW9yBJb_oGNCSnxBToOWO3ig/exec";
 
-    function registrarPresenca() {
+    function registrarPresenca(evento) {
       const nome = document.getElementById("nome").value;
       const mensagem = document.getElementById("mensagem");
 
@@ -172,11 +182,14 @@
 
       fetch(scriptURL, {
         method: 'POST',
-        body: new URLSearchParams({ nome: nome })
+        body: new URLSearchParams({
+          nome: nome,
+          evento: evento
+        })
       })
       .then(response => response.text())
       .then(result => {
-        mensagem.textContent = `✅ Presença de ${nome} registrada com sucesso!`;
+        mensagem.textContent = `✅ Presença de ${nome} registrada em "${evento}"!`;
         mensagem.style.color = "green";
         setTimeout(() => mensagem.textContent = "", 4000);
       })
